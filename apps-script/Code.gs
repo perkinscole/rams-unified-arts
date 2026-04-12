@@ -276,6 +276,9 @@ function serveCourseList_(email) {
     }
   } catch (err) {
     Logger.log('Error listing courses: ' + err.toString());
+    return ContentService
+      .createTextOutput(JSON.stringify({ courses: [], error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
 
   return ContentService
@@ -481,6 +484,9 @@ function listMyCoursesDialog() {
  * This is a self-contained page that teachers visit to link their courses.
  */
 function getAuthPageHtml_() {
+  // Get the actual web app URL server-side (can't rely on window.location in the sandbox)
+  var actualScriptUrl = ScriptApp.getService().getUrl();
+
   return '<!DOCTYPE html>' +
   '<html><head>' +
   '<meta charset="UTF-8">' +
@@ -557,7 +563,7 @@ function getAuthPageHtml_() {
   '</div>' +
 
   '<script>' +
-    'var scriptUrl = window.location.href.split("?")[0];' +
+    'var scriptUrl = "' + actualScriptUrl + '";' +
 
     'function loadCourses() {' +
       'var email = document.getElementById("email").value;' +
@@ -567,6 +573,10 @@ function getAuthPageHtml_() {
       'fetch(scriptUrl + "?action=courses&email=" + encodeURIComponent(email))' +
         '.then(function(r) { return r.json(); })' +
         '.then(function(data) {' +
+          'if (data.error) {' +
+            'list.innerHTML = "<p>API Error: " + data.error + "</p><p>Make sure the Google Classroom API is enabled in the Apps Script Services, and that you have run initialSetup() at least once.</p>";' +
+            'return;' +
+          '}' +
           'if (!data.courses || data.courses.length === 0) {' +
             'list.innerHTML = "<p>No active courses found. Make sure the script owner (Cole) has been added as a co-teacher to your courses.</p>";' +
             'return;' +
@@ -581,7 +591,8 @@ function getAuthPageHtml_() {
           'list.innerHTML = html;' +
         '})' +
         '.catch(function(err) {' +
-          'list.innerHTML = "<p>Error loading courses. Please try again.</p>";' +
+          'list.innerHTML = "<p>Error loading courses: " + err.message + ". Please try again.</p>";' +
+          'console.error("Load courses error:", err);' +
         '});' +
     '}' +
 
