@@ -1491,6 +1491,78 @@ ul {
 }
 
 /* ===================== TEACHER PORTAL ===================== */
+.portal-lock-card {
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    max-width: 500px;
+    margin: 0 auto 32px;
+}
+
+.portal-lock-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.portal-lock-card h2 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 8px;
+}
+
+.portal-lock-card p {
+    font-size: 0.95rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+.portal-lock-note {
+    margin-top: 20px;
+    font-size: 0.82rem;
+    color: var(--gray-400);
+    font-style: italic;
+}
+
+.portal-denied {
+    border-color: var(--red);
+    background: rgba(196, 30, 58, 0.02);
+}
+
+.portal-signed-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #d1fae5;
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+    color: #065f46;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.portal-signout-btn {
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid #065f46;
+    background: transparent;
+    color: #065f46;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.portal-signout-btn:hover {
+    background: #065f46;
+    color: white;
+}
+
 .nav-teacher {
     border: 1px solid var(--gray-300);
     border-radius: var(--radius-sm);

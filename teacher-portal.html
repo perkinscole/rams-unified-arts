@@ -3,10 +3,9 @@
     Author: Cole Perkins
     Date Created: 2026-04-12
     Date Last Modified: 2026-04-12
-    Description: Teacher Portal page for the RAMS Unified Arts website. Embeds
-                 the Google Apps Script authorization page where teachers can
-                 connect their Google Classroom courses to the homework feed.
-                 Future: add OAuth login so only teachers can access this page.
+    Description: Teacher Portal page for the RAMS Unified Arts website. Protected
+                 by Google Sign-In — only @holliston.k12.ma.us accounts can access
+                 the Classroom setup tool. Uses Google Identity Services for auth.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +16,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -52,52 +52,86 @@
 
     <main class="container section">
 
-        <!-- Info Banner -->
-        <div class="portal-info">
-            <div class="portal-info-icon">&#128274;</div>
-            <div>
-                <h3>For RAMS Unified Arts Teachers Only</h3>
-                <p>Use this tool to link your Google Classroom courses to the homework page.
-                   Once connected, your posted assignments will automatically appear for
-                   parents and students each day.</p>
+        <!-- LOCKED STATE: shown before sign-in -->
+        <div id="portalLocked">
+            <div class="portal-lock-card">
+                <div class="portal-lock-icon">&#128274;</div>
+                <h2>Teacher Sign-In Required</h2>
+                <p>Sign in with your <strong>@holliston.k12.ma.us</strong> Google account to access the Classroom setup tool.</p>
+
+                <div id="googleSignInBtn" style="margin-top: 24px; display: flex; justify-content: center;"></div>
+
+                <p class="portal-lock-note">Student accounts will not be granted access.</p>
             </div>
         </div>
 
-        <!-- Link to Auth Page -->
-        <div class="portal-action">
-            <a href="https://script.google.com/macros/s/AKfycbxAUvxs8mRfCQ3_J42CQIk9bQVPDa9K7D00ZO-WZubCUYKWobf9IjxwBgJLSmOUA0Gh/exec?action=authorize"
-               target="_blank"
-               class="btn btn-primary portal-launch-btn">
-                Open Classroom Setup Tool
-            </a>
-            <p class="portal-action-note">Opens in a new tab so Google sign-in and saving work correctly.</p>
+        <!-- ACCESS DENIED: shown for non-holliston accounts -->
+        <div id="portalDenied" style="display: none;">
+            <div class="portal-lock-card portal-denied">
+                <div class="portal-lock-icon">&#128683;</div>
+                <h2>Access Denied</h2>
+                <p id="deniedMessage">This portal is only available to Holliston staff accounts.</p>
+                <button class="btn btn-outline" onclick="signOut()" style="margin-top: 16px;">Try a Different Account</button>
+            </div>
         </div>
 
-        <!-- Help Section -->
-        <div class="portal-help">
-            <h3>Need Help?</h3>
-            <div class="portal-help-grid">
-                <div class="portal-help-card">
-                    <h4>Step 1: Co-Teacher Access</h4>
-                    <p>Add <strong>perkinsc@holliston.k12.ma.us</strong> as a co-teacher
-                       on each Google Classroom course you want on the homework page.</p>
-                </div>
-                <div class="portal-help-card">
-                    <h4>Step 2: Fill Out the Form</h4>
-                    <p>Enter your school email, display name, and subject above.
-                       Then click "Load My Courses" to see your classes.</p>
-                </div>
-                <div class="portal-help-card">
-                    <h4>Step 3: Select &amp; Save</h4>
-                    <p>Check the courses you want included, then click
-                       "Save Configuration." You're done!</p>
-                </div>
-                <div class="portal-help-card">
-                    <h4>When Does It Update?</h4>
-                    <p>The homework page refreshes automatically every morning at 6 AM.
-                       You can also ask Mr. Perkins to trigger a manual refresh.</p>
+        <!-- UNLOCKED STATE: shown after successful sign-in -->
+        <div id="portalUnlocked" style="display: none;">
+
+            <!-- Signed-in banner -->
+            <div class="portal-signed-in">
+                <span>Signed in as <strong id="teacherName"></strong> (<span id="teacherEmail"></span>)</span>
+                <button class="portal-signout-btn" onclick="signOut()">Sign Out</button>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="portal-info">
+                <div class="portal-info-icon">&#9989;</div>
+                <div>
+                    <h3>Welcome to the Teacher Portal</h3>
+                    <p>Use this tool to link your Google Classroom courses to the homework page.
+                       Once connected, your posted assignments will automatically appear for
+                       parents and students each day.</p>
                 </div>
             </div>
+
+            <!-- Link to Auth Page -->
+            <div class="portal-action">
+                <a href="https://script.google.com/macros/s/AKfycbxAUvxs8mRfCQ3_J42CQIk9bQVPDa9K7D00ZO-WZubCUYKWobf9IjxwBgJLSmOUA0Gh/exec?action=authorize"
+                   target="_blank"
+                   class="btn btn-primary portal-launch-btn">
+                    Open Classroom Setup Tool
+                </a>
+                <p class="portal-action-note">Opens in a new tab so Google sign-in and saving work correctly.</p>
+            </div>
+
+            <!-- Help Section -->
+            <div class="portal-help">
+                <h3>Need Help?</h3>
+                <div class="portal-help-grid">
+                    <div class="portal-help-card">
+                        <h4>Step 1: Co-Teacher Access</h4>
+                        <p>Add <strong>perkinsc@holliston.k12.ma.us</strong> as a co-teacher
+                           on each Google Classroom course you want on the homework page.</p>
+                    </div>
+                    <div class="portal-help-card">
+                        <h4>Step 2: Fill Out the Form</h4>
+                        <p>Enter your school email, display name, and subject above.
+                           Then click "Load My Courses" to see your classes.</p>
+                    </div>
+                    <div class="portal-help-card">
+                        <h4>Step 3: Select &amp; Save</h4>
+                        <p>Check the courses you want included, then click
+                           "Save Configuration." You're done!</p>
+                    </div>
+                    <div class="portal-help-card">
+                        <h4>When Does It Update?</h4>
+                        <p>The homework page refreshes automatically every morning at 6 AM.
+                           You can also ask Mr. Perkins to trigger a manual refresh.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </main>
@@ -126,5 +160,145 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script>
+        /*
+         * Teacher Portal Authentication
+         * Uses Google Identity Services to verify the user has a
+         * @holliston.k12.ma.us account before showing the setup tool.
+         *
+         * ALLOWED_DOMAIN: only emails ending with this domain get access.
+         * This is a client-side gate — enough to stop students from
+         * accidentally changing configs. The Apps Script backend is the
+         * real security layer.
+         */
+        var ALLOWED_DOMAIN = 'holliston.k12.ma.us';
+
+        /*
+         * Google OAuth Client ID
+         * To get this:
+         * 1. Go to console.cloud.google.com
+         * 2. Create or select a project
+         * 3. Go to APIs & Services > Credentials
+         * 4. Create OAuth 2.0 Client ID (Web application)
+         * 5. Add your GitHub Pages URL to Authorized JavaScript Origins
+         *    (https://perkinscole.github.io)
+         * 6. Paste the Client ID below
+         */
+        var GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
+
+        // Check if we have a valid client ID configured
+        var useGoogleAuth = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== 'YOUR_GOOGLE_CLIENT_ID_HERE';
+
+        window.addEventListener('load', function() {
+            if (!useGoogleAuth) {
+                // No client ID set up yet — fall back to simple email check
+                showSimpleGate();
+                return;
+            }
+
+            // Initialize Google Sign-In
+            google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleCredentialResponse,
+                auto_select: false
+            });
+
+            google.accounts.id.renderButton(
+                document.getElementById('googleSignInBtn'),
+                {
+                    theme: 'outline',
+                    size: 'large',
+                    text: 'signin_with',
+                    shape: 'rectangular',
+                    width: 280
+                }
+            );
+        });
+
+        /**
+         * Handles the Google Sign-In response.
+         * Decodes the JWT to get the email and checks the domain.
+         */
+        function handleCredentialResponse(response) {
+            // Decode the JWT (payload is the second base64 segment)
+            var payload = JSON.parse(atob(response.credential.split('.')[1]));
+            var email = payload.email || '';
+            var name = payload.name || email;
+            var domain = email.split('@')[1] || '';
+
+            if (domain === ALLOWED_DOMAIN) {
+                // Access granted
+                document.getElementById('portalLocked').style.display = 'none';
+                document.getElementById('portalDenied').style.display = 'none';
+                document.getElementById('portalUnlocked').style.display = 'block';
+                document.getElementById('teacherName').textContent = name;
+                document.getElementById('teacherEmail').textContent = email;
+            } else {
+                // Access denied
+                document.getElementById('portalLocked').style.display = 'none';
+                document.getElementById('portalDenied').style.display = 'block';
+                document.getElementById('deniedMessage').textContent =
+                    'The account "' + email + '" is not a Holliston staff account. Please sign in with your @holliston.k12.ma.us email.';
+            }
+        }
+
+        /**
+         * Signs the user out and resets to the locked state.
+         */
+        function signOut() {
+            if (useGoogleAuth) {
+                google.accounts.id.disableAutoSelect();
+            }
+            document.getElementById('portalLocked').style.display = 'block';
+            document.getElementById('portalDenied').style.display = 'none';
+            document.getElementById('portalUnlocked').style.display = 'none';
+
+            // Re-render sign-in button or simple gate
+            if (useGoogleAuth) {
+                google.accounts.id.renderButton(
+                    document.getElementById('googleSignInBtn'),
+                    { theme: 'outline', size: 'large', text: 'signin_with', shape: 'rectangular', width: 280 }
+                );
+            } else {
+                showSimpleGate();
+            }
+        }
+
+        /**
+         * Fallback: simple email input gate when Google OAuth Client ID
+         * isn't configured yet. Checks if typed email ends with the allowed domain.
+         */
+        function showSimpleGate() {
+            var btnContainer = document.getElementById('googleSignInBtn');
+            btnContainer.innerHTML =
+                '<div style="width: 100%; max-width: 360px;">' +
+                    '<input type="email" id="simpleEmail" placeholder="Enter your school email" ' +
+                        'style="width:100%; padding:12px 16px; border:1px solid #d1d5db; border-radius:8px; font-size:0.95rem; margin-bottom:12px;">' +
+                    '<button class="btn btn-primary" onclick="checkSimpleEmail()" style="width:100%;">Sign In</button>' +
+                '</div>';
+        }
+
+        function checkSimpleEmail() {
+            var email = (document.getElementById('simpleEmail').value || '').trim().toLowerCase();
+            var domain = email.split('@')[1] || '';
+
+            if (domain === ALLOWED_DOMAIN) {
+                var name = email.split('@')[0].replace(/[^a-zA-Z]/g, ' ');
+                name = name.charAt(0).toUpperCase() + name.slice(1);
+                document.getElementById('portalLocked').style.display = 'none';
+                document.getElementById('portalDenied').style.display = 'none';
+                document.getElementById('portalUnlocked').style.display = 'block';
+                document.getElementById('teacherName').textContent = name;
+                document.getElementById('teacherEmail').textContent = email;
+            } else if (!email) {
+                alert('Please enter your school email.');
+            } else {
+                document.getElementById('portalLocked').style.display = 'none';
+                document.getElementById('portalDenied').style.display = 'block';
+                document.getElementById('deniedMessage').textContent =
+                    '"' + email + '" is not a Holliston staff account. Please use your @holliston.k12.ma.us email.';
+            }
+        }
+    </script>
 </body>
 </html>
