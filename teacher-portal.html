@@ -56,7 +56,7 @@
             <div class="portal-lock-card">
                 <div class="portal-lock-icon">&#128274;</div>
                 <h2>Teacher Sign-In Required</h2>
-                <p>Sign in with your <strong>@holliston.k12.ma.us</strong> Google account to access the Classroom setup tool.</p>
+                <p>Sign in with your <strong>@holliston.k12.ma.us</strong> email and the portal password to access the Classroom setup tool.</p>
 
                 <div id="googleSignInBtn" style="margin-top: 24px; display: flex; justify-content: center;"></div>
 
@@ -267,36 +267,61 @@
          * Fallback: simple email input gate when Google OAuth Client ID
          * isn't configured yet. Checks if typed email ends with the allowed domain.
          */
+        var PORTAL_PASS = 'unified2026';
+
         function showSimpleGate() {
             var btnContainer = document.getElementById('googleSignInBtn');
             btnContainer.innerHTML =
                 '<div style="width: 100%; max-width: 360px;">' +
                     '<input type="email" id="simpleEmail" placeholder="Enter your school email" ' +
                         'style="width:100%; padding:12px 16px; border:1px solid #d1d5db; border-radius:8px; font-size:0.95rem; margin-bottom:12px;">' +
+                    '<input type="password" id="simplePassword" placeholder="Enter portal password" ' +
+                        'style="width:100%; padding:12px 16px; border:1px solid #d1d5db; border-radius:8px; font-size:0.95rem; margin-bottom:12px;">' +
                     '<button class="btn btn-primary" onclick="checkSimpleEmail()" style="width:100%;">Sign In</button>' +
                 '</div>';
+
+            // Allow Enter key to submit
+            setTimeout(function() {
+                var passField = document.getElementById('simplePassword');
+                if (passField) {
+                    passField.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') checkSimpleEmail();
+                    });
+                }
+            }, 100);
         }
 
         function checkSimpleEmail() {
             var email = (document.getElementById('simpleEmail').value || '').trim().toLowerCase();
+            var password = (document.getElementById('simplePassword').value || '');
             var domain = email.split('@')[1] || '';
 
-            if (domain === ALLOWED_DOMAIN) {
-                var name = email.split('@')[0].replace(/[^a-zA-Z]/g, ' ');
-                name = name.charAt(0).toUpperCase() + name.slice(1);
-                document.getElementById('portalLocked').style.display = 'none';
-                document.getElementById('portalDenied').style.display = 'none';
-                document.getElementById('portalUnlocked').style.display = 'block';
-                document.getElementById('teacherName').textContent = name;
-                document.getElementById('teacherEmail').textContent = email;
-            } else if (!email) {
+            if (!email) {
                 alert('Please enter your school email.');
-            } else {
+                return;
+            }
+
+            if (domain !== ALLOWED_DOMAIN) {
                 document.getElementById('portalLocked').style.display = 'none';
                 document.getElementById('portalDenied').style.display = 'block';
                 document.getElementById('deniedMessage').textContent =
                     '"' + email + '" is not a Holliston staff account. Please use your @holliston.k12.ma.us email.';
+                return;
             }
+
+            if (password !== PORTAL_PASS) {
+                alert('Incorrect password. Please try again.');
+                return;
+            }
+
+            // Access granted
+            var name = email.split('@')[0].replace(/[^a-zA-Z]/g, ' ');
+            name = name.charAt(0).toUpperCase() + name.slice(1);
+            document.getElementById('portalLocked').style.display = 'none';
+            document.getElementById('portalDenied').style.display = 'none';
+            document.getElementById('portalUnlocked').style.display = 'block';
+            document.getElementById('teacherName').textContent = name;
+            document.getElementById('teacherEmail').textContent = email;
         }
     </script>
 </body>
