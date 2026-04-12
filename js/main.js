@@ -140,9 +140,14 @@ function renderHomeworkCards(grid, data, lastUpdatedEl) {
     }
 
     subjects.forEach(function(subj) {
-        // Group assignments by grade
+        // Sort assignments by date first, then group by grade
+        var sortedAssignments = (subj.assignments || []).slice().sort(function(a, b) {
+            return (a.dueDateRaw || '9999') < (b.dueDateRaw || '9999') ? -1 : 1;
+        });
+
+        // Group by grade, preserving date sort within each grade
         var gradeMap = {};
-        (subj.assignments || []).forEach(function(a) {
+        sortedAssignments.forEach(function(a) {
             var grade = a.grade || 'All Grades';
             if (!gradeMap[grade]) gradeMap[grade] = [];
             gradeMap[grade].push(a);
@@ -164,20 +169,55 @@ function renderHomeworkCards(grid, data, lastUpdatedEl) {
             html += '<span class="hw-grade-content">No assignments posted this week.</span>';
             html += '</div>';
         } else {
-            // Sort grades so they appear in order
+            // Sort grades so they appear in order (Grade 6, Grade 7, Grade 8, All Grades)
             grades.sort();
             grades.forEach(function(grade) {
-                html += '<div class="hw-grade-row">';
-                html += '<span class="hw-grade-label">' + escapeHtml(grade) + '</span>';
-                html += '<span class="hw-grade-content">';
-                gradeMap[grade].forEach(function(a, i) {
-                    if (i > 0) html += '<br>';
-                    html += '<strong>' + escapeHtml(a.title) + '</strong>';
-                    if (a.dueDate) html += ' <span style="color:var(--red); font-size:0.85rem;">(Due: ' + escapeHtml(a.dueDate) + ')</span>';
-                    if (a.description) html += '<br><span style="font-size:0.88rem; color:var(--gray-500);">' + escapeHtml(a.description) + '</span>';
-                    if (a.link) html += ' <a href="' + escapeHtml(a.link) + '" target="_blank" style="font-size:0.82rem; color:var(--blue);">View in Classroom</a>';
+                html += '<div class="hw-grade-section">';
+                html += '<div class="hw-grade-label-header">' + escapeHtml(grade) + '</div>';
+
+                // Group this grade's assignments by day of week
+                var dayMap = {};
+                var noDayItems = [];
+                gradeMap[grade].forEach(function(a) {
+                    if (a.dueDay) {
+                        if (!dayMap[a.dueDay]) dayMap[a.dueDay] = [];
+                        dayMap[a.dueDay].push(a);
+                    } else {
+                        noDayItems.push(a);
+                    }
                 });
-                html += '</span>';
+
+                var dayOrder = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+                var hasDays = Object.keys(dayMap).length > 0;
+
+                if (hasDays) {
+                    dayOrder.forEach(function(day) {
+                        if (!dayMap[day]) return;
+                        html += '<div class="hw-day-group">';
+                        html += '<span class="hw-day-label">' + day + '</span>';
+                        html += '<div class="hw-day-items">';
+                        dayMap[day].forEach(function(a) {
+                            html += renderAssignment_(a);
+                        });
+                        html += '</div></div>';
+                    });
+                }
+
+                // Assignments with no specific due date
+                if (noDayItems.length > 0) {
+                    if (hasDays) {
+                        html += '<div class="hw-day-group">';
+                        html += '<span class="hw-day-label">Ongoing</span>';
+                        html += '<div class="hw-day-items">';
+                    }
+                    noDayItems.forEach(function(a) {
+                        html += renderAssignment_(a);
+                    });
+                    if (hasDays) {
+                        html += '</div></div>';
+                    }
+                }
+
                 html += '</div>';
             });
         }
@@ -189,6 +229,25 @@ function renderHomeworkCards(grid, data, lastUpdatedEl) {
 
     // Re-bind filter buttons to the newly rendered cards
     bindFilterButtons();
+}
+
+/**
+ * Renders a single assignment item as HTML.
+ */
+function renderAssignment_(a) {
+    var h = '<div class="hw-assignment-item">';
+    h += '<strong>' + escapeHtml(a.title) + '</strong>';
+    if (a.dueDate && a.dueDate !== 'No due date') {
+        h += ' <span class="hw-due-tag">Due ' + escapeHtml(a.dueDate) + '</span>';
+    }
+    if (a.description) {
+        h += '<br><span class="hw-desc">' + escapeHtml(a.description) + '</span>';
+    }
+    if (a.link) {
+        h += ' <a href="' + escapeHtml(a.link) + '" target="_blank" class="hw-link">View in Classroom</a>';
+    }
+    h += '</div>';
+    return h;
 }
 
 /**

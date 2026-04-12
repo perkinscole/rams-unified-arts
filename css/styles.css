@@ -955,6 +955,78 @@ ul {
     color: var(--gray-600);
 }
 
+.hw-grade-section {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.hw-grade-section:last-child {
+    border-bottom: none;
+}
+
+.hw-grade-label-header {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid var(--red);
+    display: inline-block;
+}
+
+.hw-day-group {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 8px;
+    padding: 6px 0;
+}
+
+.hw-day-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding-top: 2px;
+}
+
+.hw-day-items {
+    display: grid;
+    gap: 6px;
+}
+
+.hw-assignment-item {
+    font-size: 0.92rem;
+    color: var(--gray-700);
+    line-height: 1.5;
+}
+
+.hw-due-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--red);
+    background: rgba(196, 30, 58, 0.08);
+    padding: 1px 8px;
+    border-radius: 100px;
+    vertical-align: middle;
+}
+
+.hw-desc {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+}
+
+.hw-link {
+    font-size: 0.82rem;
+    color: var(--blue);
+}
+
+.hw-link:hover {
+    text-decoration: underline;
+}
+
 /* AI Teacher Tool */
 .ai-section {
     margin-top: 60px;
@@ -1308,6 +1380,14 @@ ul {
     .portal-info {
         flex-direction: column;
         text-align: center;
+    }
+
+    .hw-day-group {
+        grid-template-columns: 1fr;
+    }
+
+    .hw-day-label {
+        padding-bottom: 2px;
     }
 }
 

@@ -245,6 +245,8 @@ function fetchAssignmentsForTeacher_(config) {
               title: work.title || 'Untitled',
               description: truncateDescription_(work.description || ''),
               dueDate: dueDate ? formatDate_(dueDate) : 'No due date',
+              dueDateRaw: dueDate ? dueDate.toISOString().split('T')[0] : '',
+              dueDay: dueDate ? getDayName_(dueDate) : '',
               courseTitle: courseTitle,
               grade: grade,
               state: work.state || 'PUBLISHED',
@@ -439,6 +441,14 @@ function truncateDescription_(desc) {
 function formatDate_(date) {
   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return months[date.getMonth()] + ' ' + date.getDate();
+}
+
+/**
+ * Returns the day of the week name for a date (e.g., "Monday").
+ */
+function getDayName_(date) {
+  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  return days[date.getDay()];
 }
 
 /**
