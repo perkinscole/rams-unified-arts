@@ -82,49 +82,6 @@
         <!-- Homework cards are dynamically injected here by loadHomework() -->
         <div class="hw-grid" id="hwGrid"></div>
 
-        <!-- AI Teacher Tool -->
-        <div class="ai-section" id="aiTool">
-            <h2>Homework Posting Helper</h2>
-            <p>Teachers: paste your quick notes and generate a clean, formatted homework posting for the week. You can then copy and paste the result into the site or share with parents.</p>
-
-            <div class="ai-form" id="aiForm">
-                <div class="ai-form-row">
-                    <div>
-                        <label for="aiSubject">Subject</label>
-                        <select id="aiSubject">
-                            <option value="">Select your subject...</option>
-                            <option value="Art">Art</option>
-                            <option value="Band">Band</option>
-                            <option value="Chorus">Chorus</option>
-                            <option value="General Music">General Music</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Health">Health</option>
-                            <option value="Physical Education">Physical Education</option>
-                            <option value="Wellness 2">Wellness 2</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="aiWeek">Week Of</label>
-                        <input type="date" id="aiWeek">
-                    </div>
-                </div>
-
-                <div>
-                    <label for="aiNotes">Your Quick Notes</label>
-                    <textarea id="aiNotes" placeholder="Type or paste your rough notes here. Example:&#10;&#10;gr6 - finish name design, upload to artsonia, statement due in 2 wks&#10;gr7 - name design due, edpuzzle on GC about renaissance&#10;gr8 - name design due, connect parent to artsonia if new"></textarea>
-                </div>
-
-                <button class="ai-btn" id="aiGenerate" onclick="generateHwPosting()">
-                    Generate Formatted Posting
-                </button>
-            </div>
-
-            <div class="ai-output" id="aiOutput">
-                <h4>Formatted Homework Posting</h4>
-                <div id="aiResult"></div>
-                <button class="copy-btn" onclick="copyOutput()">Copy to Clipboard</button>
-            </div>
-        </div>
 
     </main>
 

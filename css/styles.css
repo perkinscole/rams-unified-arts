@@ -1223,19 +1223,24 @@ ul {
     line-height: 1.6;
 }
 
-.portal-frame-container {
+.portal-action {
+    text-align: center;
+    padding: 48px 28px;
+    background: var(--gray-50);
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-lg);
-    overflow: hidden;
     margin-bottom: 48px;
-    background: var(--gray-50);
 }
 
-.portal-frame {
-    width: 100%;
-    min-height: 700px;
-    border: none;
-    display: block;
+.portal-launch-btn {
+    font-size: 1.1rem;
+    padding: 18px 40px;
+}
+
+.portal-action-note {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: var(--gray-400);
 }
 
 .portal-help {
