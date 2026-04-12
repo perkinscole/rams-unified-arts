@@ -150,6 +150,13 @@ ul {
     font-size: 1.5rem;
 }
 
+.logo-img {
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .nav-links {
     display: flex;
     gap: 8px;
@@ -779,11 +786,19 @@ ul {
 }
 
 .team-card-img {
-    height: 200px;
+    height: 220px;
     background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+}
+
+.team-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
 }
 
 .team-card-img .placeholder-icon {
