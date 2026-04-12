@@ -930,7 +930,7 @@ ul {
 
 .hw-card.open .hw-card-body {
     padding: 20px 24px;
-    max-height: 600px;
+    max-height: none;
 }
 
 .hw-grade-row {

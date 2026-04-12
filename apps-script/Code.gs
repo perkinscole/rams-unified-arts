@@ -261,7 +261,18 @@ function fetchAssignmentsForTeacher_(config) {
     }
   });
 
-  return assignments;
+  // Deduplicate: same assignment title + grade only needs to appear once
+  var seen = {};
+  var deduplicated = [];
+  assignments.forEach(function(a) {
+    var key = a.grade + '|' + a.title;
+    if (!seen[key]) {
+      seen[key] = true;
+      deduplicated.push(a);
+    }
+  });
+
+  return deduplicated;
 }
 
 /* ===================== TEACHER AUTH PAGE ===================== */
@@ -406,11 +417,23 @@ function getTeacherConfigs_(configSheet) {
 
 /**
  * Tries to extract a grade level (6, 7, 8) from a course title.
+ * Handles formats like:
+ *   "Computer Science - 8T1" → Grade 8
+ *   "Computer Science - 7M2" → Grade 7
+ *   "Computer Science - 6H1" → Grade 6
+ *   "Grade 6 Art" → Grade 6
+ *   "6th Grade Health" → Grade 6
  */
 function extractGrade_(title) {
   if (!title) return 'All Grades';
 
-  // Match patterns like "Grade 6", "Gr 7", "6th", "Period 3" (less useful)
+  // Match "- 8T1", "- 7M2", "- 6H1" (section code starting with grade number)
+  var sectionMatch = title.match(/[\-–]\s*([678])[A-Za-z]/);
+  if (sectionMatch) {
+    return 'Grade ' + sectionMatch[1];
+  }
+
+  // Match "Grade 6", "Gr 7", etc.
   var match = title.match(/(?:grade|gr\.?)\s*(\d)/i) ||
               title.match(/(\d)(?:th|st|nd|rd)\s*(?:grade)?/i);
 
