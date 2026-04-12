@@ -46,7 +46,7 @@ if (navbar) {
  * Replace this URL with your deployed Google Apps Script web app URL.
  * See apps-script/SETUP_INSTRUCTIONS.md for deployment steps.
  */
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdfNVQBQQN7y0fU9MN5AXduo4m8LCsekj18D0nipewNvIO5Ax7-qF6CscNe42t09Y/exec';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVrMUs4pvlASoJfR2Gpflu706s4onC8DVhe7-rLqUoKPFHCG6mE0vWHd737ywS2x9B/exec';
 
 /*
  * Fallback data used when the API is unavailable (not yet deployed,
