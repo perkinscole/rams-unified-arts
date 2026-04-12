@@ -18,7 +18,9 @@
  * You will be prompted to authorize Google Classroom access.
  */
 function initialSetup() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getSpreadsheet_();
+
+  Logger.log('Using spreadsheet: ' + ss.getUrl());
 
   // Create Config sheet
   var configSheet = ss.getSheetByName('Config');
@@ -42,19 +44,7 @@ function initialSetup() {
   // Set up daily trigger (6 AM)
   setupDailyTrigger_();
 
-  // Show success
-  SpreadsheetApp.getUi().alert(
-    'Setup Complete!',
-    'The homework system is ready.\n\n' +
-    'Next steps:\n' +
-    '1. Deploy this script as a web app (Deploy > New Deployment)\n' +
-    '2. Set "Execute as" to your account (perkinsc@holliston.k12.ma.us)\n' +
-    '3. Set "Who has access" to "Anyone"\n' +
-    '4. Share the setup link with teachers (Menu > Unified Arts HW > Open Teacher Setup Page)\n' +
-    '5. Each teacher visits the link, enters their info, and selects their courses\n' +
-    '6. Copy the web app URL into your website\'s homework.html file',
-    SpreadsheetApp.getUi().ButtonSet.OK
-  );
+  Logger.log('Setup complete! Spreadsheet URL: ' + ss.getUrl());
 }
 
 /**

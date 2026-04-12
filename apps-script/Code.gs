@@ -9,6 +9,32 @@
                  and caches results in a Google Sheet for fast serving.
 */
 
+/* ===================== SPREADSHEET ACCESS ===================== */
+
+/**
+ * Gets or creates the spreadsheet used to store config and homework data.
+ * Uses PropertiesService to remember the sheet ID so this works as a
+ * standalone script (not bound to a specific Google Sheet).
+ */
+function getSpreadsheet_() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty('SHEET_ID');
+
+  if (sheetId) {
+    try {
+      return SpreadsheetApp.openById(sheetId);
+    } catch (e) {
+      Logger.log('Stored sheet ID invalid, creating new sheet.');
+    }
+  }
+
+  // Create a new spreadsheet and store its ID
+  var ss = SpreadsheetApp.create('RAMS UA Homework Data');
+  props.setProperty('SHEET_ID', ss.getId());
+  Logger.log('Created new spreadsheet: ' + ss.getUrl());
+  return ss;
+}
+
 /* ===================== WEB APP ENDPOINTS ===================== */
 
 /**
@@ -74,7 +100,7 @@ function doPost(e) {
  * Serves the cached homework JSON from the Data sheet.
  */
 function serveHomeworkJson_() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getSpreadsheet_();
   var dataSheet = ss.getSheetByName('Data');
 
   if (!dataSheet || dataSheet.getLastRow() < 2) {
@@ -108,7 +134,7 @@ function serveHomeworkJson_() {
  * Called by the daily trigger and can be run manually.
  */
 function updateHomeworkData() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getSpreadsheet_();
   var configSheet = ss.getSheetByName('Config');
 
   if (!configSheet || configSheet.getLastRow() < 2) {
@@ -292,7 +318,7 @@ function saveTeacherConfigFromAuthPage(data) {
  * Saves a teacher's configuration to the Config sheet.
  */
 function saveTeacherConfig_(data) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getSpreadsheet_();
   var configSheet = ss.getSheetByName('Config');
 
   if (!configSheet) {
@@ -333,7 +359,7 @@ function saveTeacherConfig_(data) {
  * Removes a teacher's configuration from the Config sheet.
  */
 function removeTeacherConfig_(email) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = getSpreadsheet_();
   var configSheet = ss.getSheetByName('Config');
   if (!configSheet) return;
 
