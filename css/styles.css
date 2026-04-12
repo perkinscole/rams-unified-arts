@@ -151,10 +151,15 @@ ul {
 }
 
 .logo-img {
-    height: 36px;
-    width: 36px;
+    height: 28px;
+    width: 28px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.footer-brand .logo-img {
+    height: 32px;
+    width: 32px;
 }
 
 .nav-links {
