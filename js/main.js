@@ -154,7 +154,7 @@ function renderHomeworkCards(grid, data, lastUpdatedEl) {
         });
 
         // Build the card HTML
-        html += '<div class="hw-card" data-subject="' + escapeHtml(subj.filterKey) + '">';
+        html += '<div class="hw-card open" data-subject="' + escapeHtml(subj.filterKey) + '">';
         html += '<div class="hw-card-header" onclick="toggleHwCard(this)">';
         html += '<span class="hw-card-icon">' + (subj.icon || '') + '</span>';
         html += '<h3>' + escapeHtml(subj.subject) + ' &mdash; ' + escapeHtml(subj.teacher) + '</h3>';
@@ -186,6 +186,16 @@ function renderHomeworkCards(grid, data, lastUpdatedEl) {
                         noDayItems.push(a);
                     }
                 });
+
+                // Roll Saturday/Sunday assignments into Friday
+                if (dayMap['Saturday']) {
+                    if (!dayMap['Friday']) dayMap['Friday'] = [];
+                    dayMap['Saturday'].forEach(function(a) { dayMap['Friday'].push(a); });
+                }
+                if (dayMap['Sunday']) {
+                    if (!dayMap['Friday']) dayMap['Friday'] = [];
+                    dayMap['Sunday'].forEach(function(a) { dayMap['Friday'].push(a); });
+                }
 
                 // Always show all 5 weekdays, even if empty
                 var dayOrder = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
