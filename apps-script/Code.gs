@@ -250,12 +250,10 @@ function serveAuthPage_() {
 }
 
 /**
- * Returns course list for a given teacher email.
- * Used by the auth page to show available courses.
+ * Returns course list. Called by google.script.run from the auth page.
+ * Public (no underscore) so the client-side code can call it.
  */
-function serveCourseList_(email) {
-  // This runs as the script owner, so we list all courses visible to the owner.
-  // Teachers will need to share their courses or the owner needs co-teacher access.
+function getCoursesForAuthPage() {
   var courses = [];
 
   try {
@@ -269,21 +267,25 @@ function serveCourseList_(email) {
         courses.push({
           id: course.id,
           name: course.name,
-          section: course.section || '',
-          enrollmentCode: course.enrollmentCode || ''
+          section: course.section || ''
         });
       });
     }
   } catch (err) {
     Logger.log('Error listing courses: ' + err.toString());
-    return ContentService
-      .createTextOutput(JSON.stringify({ courses: [], error: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return { courses: [], error: err.toString() };
   }
 
-  return ContentService
-    .createTextOutput(JSON.stringify({ courses: courses }))
-    .setMimeType(ContentService.MimeType.JSON);
+  return { courses: courses };
+}
+
+/**
+ * Saves teacher config. Called by google.script.run from the auth page.
+ * Public (no underscore) so the client-side code can call it.
+ */
+function saveTeacherConfigFromAuthPage(data) {
+  saveTeacherConfig_(data);
+  return { success: true, message: 'Configuration saved!' };
 }
 
 /**
@@ -563,18 +565,15 @@ function getAuthPageHtml_() {
   '</div>' +
 
   '<script>' +
-    'var scriptUrl = "' + actualScriptUrl + '";' +
-
     'function loadCourses() {' +
       'var email = document.getElementById("email").value;' +
       'if (!email) { alert("Please enter your email first."); return; }' +
       'var list = document.getElementById("courseList");' +
       'list.innerHTML = "<p>Loading courses...</p>";' +
-      'fetch(scriptUrl + "?action=courses&email=" + encodeURIComponent(email))' +
-        '.then(function(r) { return r.json(); })' +
-        '.then(function(data) {' +
+      'google.script.run' +
+        '.withSuccessHandler(function(data) {' +
           'if (data.error) {' +
-            'list.innerHTML = "<p>API Error: " + data.error + "</p><p>Make sure the Google Classroom API is enabled in the Apps Script Services, and that you have run initialSetup() at least once.</p>";' +
+            'list.innerHTML = "<p>API Error: " + data.error + "</p><p>Make sure the Google Classroom API is enabled in Services and that initialSetup() has been run.</p>";' +
             'return;' +
           '}' +
           'if (!data.courses || data.courses.length === 0) {' +
@@ -590,10 +589,10 @@ function getAuthPageHtml_() {
           '});' +
           'list.innerHTML = html;' +
         '})' +
-        '.catch(function(err) {' +
-          'list.innerHTML = "<p>Error loading courses: " + err.message + ". Please try again.</p>";' +
-          'console.error("Load courses error:", err);' +
-        '});' +
+        '.withFailureHandler(function(err) {' +
+          'list.innerHTML = "<p>Error: " + err.message + "</p>";' +
+        '})' +
+        '.getCoursesForAuthPage();' +
     '}' +
 
     'function saveConfig() {' +
@@ -623,33 +622,28 @@ function getAuthPageHtml_() {
       'status.className = "status";' +
       'status.style.display = "none";' +
 
-      'fetch(scriptUrl, {' +
-        'method: "POST",' +
-        'headers: { "Content-Type": "application/json" },' +
-        'body: JSON.stringify({' +
-          'action: "saveConfig",' +
+      'google.script.run' +
+        '.withSuccessHandler(function(data) {' +
+          'if (data.success) {' +
+            'status.className = "status success";' +
+            'status.textContent = "Configuration saved! Your assignments will appear on the homework page after the next daily update (6 AM), or when an admin clicks Refresh.";' +
+          '} else {' +
+            'status.className = "status error";' +
+            'status.textContent = "Error: " + data.message;' +
+          '}' +
+        '})' +
+        '.withFailureHandler(function(err) {' +
+          'status.className = "status error";' +
+          'status.textContent = "Error saving: " + err.message;' +
+        '})' +
+        '.saveTeacherConfigFromAuthPage({' +
           'email: email,' +
           'teacher: teacher,' +
           'subject: subject,' +
           'filterKey: filterKey,' +
           'icon: icon,' +
           'courseIds: courseIds' +
-        '})' +
-      '})' +
-      '.then(function(r) { return r.json(); })' +
-      '.then(function(data) {' +
-        'if (data.success) {' +
-          'status.className = "status success";' +
-          'status.textContent = "Configuration saved! Your assignments will appear on the homework page after the next daily update (6 AM), or when an admin clicks Refresh.";' +
-        '} else {' +
-          'status.className = "status error";' +
-          'status.textContent = "Error: " + data.message;' +
-        '}' +
-      '})' +
-      '.catch(function(err) {' +
-        'status.className = "status error";' +
-        'status.textContent = "Error saving. Please try again.";' +
-      '});' +
+        '});' +
     '}' +
   '</script>' +
   '</body></html>';
