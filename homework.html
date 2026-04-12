@@ -3,18 +3,18 @@
     Author: Cole Perkins
     Date Created: 2026-04-12
     Date Last Modified: 2026-04-12
-    Description: Weekly Homework page for the RAMS Unified Arts website. Dynamically
-                 loads homework assignments from Google Classroom via a Google Apps
-                 Script web app. Includes subject filtering, expandable cards, and
-                 a teacher homework posting helper tool. Falls back to placeholder
-                 content if the API is unavailable.
+    Description: Combined homework page for the RAMS Unified Arts website.
+                 Two tabs: "Weekly View" shows assignments grouped by subject
+                 and day, "Search" lets parents/students filter by keyword,
+                 subject, grade, and section. Both pull from the same Google
+                 Classroom API via Apps Script.
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Homework | RAMS Unified Arts</title>
+    <title>Homework | RAMS Unified Arts</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
@@ -35,8 +35,7 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="programs.html">Programs</a></li>
                 <li><a href="team.html">Our Team</a></li>
-                <li><a href="homework.html" class="active">Weekly Homework</a></li>
-                <li><a href="search.html">Search</a></li>
+                <li><a href="homework.html" class="active">Homework</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="teacher-portal.html" class="nav-teacher">Teacher Portal</a></li>
             </ul>
@@ -46,43 +45,113 @@
     <!-- Page Header -->
     <header class="page-header">
         <div class="container">
-            <h1>Weekly Homework</h1>
+            <h1>Homework</h1>
             <p>Current assignments across all Unified Arts classes</p>
         </div>
     </header>
 
     <main class="container section">
 
-        <!-- Filter Buttons -->
-        <div class="hw-controls">
-            <button class="hw-filter-btn active" data-filter="all">All Subjects</button>
-            <button class="hw-filter-btn" data-filter="art">Art</button>
-            <button class="hw-filter-btn" data-filter="band">Band</button>
-            <button class="hw-filter-btn" data-filter="chorus">Chorus</button>
-            <button class="hw-filter-btn" data-filter="music">Gen. Music</button>
-            <button class="hw-filter-btn" data-filter="cs">Computer Science</button>
-            <button class="hw-filter-btn" data-filter="health">Health</button>
-            <button class="hw-filter-btn" data-filter="pe">Phys Ed</button>
-            <button class="hw-filter-btn" data-filter="wellness">Wellness 2</button>
+        <!-- Tab Switcher -->
+        <div class="hw-tabs">
+            <button class="hw-tab active" data-tab="weekly" onclick="switchTab('weekly')">Weekly View</button>
+            <button class="hw-tab" data-tab="search" onclick="switchTab('search')">Search</button>
         </div>
 
-        <!-- Current Week -->
-        <div class="hw-week-header">
-            <h2>This Week's Assignments</h2>
-            <span class="hw-date" id="hwDate"></span>
+        <!-- ==================== WEEKLY VIEW TAB ==================== -->
+        <div class="hw-tab-content" id="tabWeekly">
+
+            <!-- Filter Buttons -->
+            <div class="hw-controls">
+                <button class="hw-filter-btn active" data-filter="all">All Subjects</button>
+                <button class="hw-filter-btn" data-filter="art">Art</button>
+                <button class="hw-filter-btn" data-filter="band">Band</button>
+                <button class="hw-filter-btn" data-filter="chorus">Chorus</button>
+                <button class="hw-filter-btn" data-filter="music">Gen. Music</button>
+                <button class="hw-filter-btn" data-filter="cs">Computer Science</button>
+                <button class="hw-filter-btn" data-filter="health">Health</button>
+                <button class="hw-filter-btn" data-filter="pe">Phys Ed</button>
+                <button class="hw-filter-btn" data-filter="wellness">Wellness 2</button>
+            </div>
+
+            <!-- Current Week -->
+            <div class="hw-week-header">
+                <h2>This Week's Assignments</h2>
+                <span class="hw-date" id="hwDate"></span>
+            </div>
+
+            <!-- Loading state -->
+            <div id="hwLoading" style="text-align: center; padding: 48px 0; color: var(--gray-400);">
+                <p style="font-size: 1.1rem;">Loading assignments from Google Classroom...</p>
+            </div>
+
+            <!-- Last updated timestamp -->
+            <p id="hwLastUpdated" style="font-size: 0.82rem; color: var(--gray-400); margin-bottom: 20px; display: none;"></p>
+
+            <!-- Homework cards injected here -->
+            <div class="hw-grid" id="hwGrid"></div>
+
         </div>
 
-        <!-- Loading state (shown while fetching from Google Classroom) -->
-        <div id="hwLoading" style="text-align: center; padding: 48px 0; color: var(--gray-400);">
-            <p style="font-size: 1.1rem;">Loading assignments from Google Classroom...</p>
+        <!-- ==================== SEARCH TAB ==================== -->
+        <div class="hw-tab-content" id="tabSearch" style="display: none;">
+
+            <!-- Search Bar -->
+            <div class="search-bar-container">
+                <span class="search-bar-icon">&#128269;</span>
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-bar"
+                    placeholder="Search by assignment name, description, or class..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <!-- Filters -->
+            <div class="search-filters">
+                <div class="search-filter-group">
+                    <label for="filterSubject">Subject</label>
+                    <select id="filterSubject">
+                        <option value="">All Subjects</option>
+                    </select>
+                </div>
+                <div class="search-filter-group">
+                    <label for="filterGrade">Grade</label>
+                    <select id="filterGrade">
+                        <option value="">All Grades</option>
+                        <option value="Grade 6">Grade 6</option>
+                        <option value="Grade 7">Grade 7</option>
+                        <option value="Grade 8">Grade 8</option>
+                    </select>
+                </div>
+                <div class="search-filter-group">
+                    <label for="filterSection">Section</label>
+                    <select id="filterSection">
+                        <option value="">All Sections</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Result Count -->
+            <p class="search-count" id="searchCount"></p>
+
+            <!-- Loading State -->
+            <div id="searchLoading" style="text-align: center; padding: 48px 0; color: var(--gray-400);">
+                <p style="font-size: 1.1rem;">Loading assignments...</p>
+            </div>
+
+            <!-- Results -->
+            <div class="search-results" id="searchResults"></div>
+
+            <!-- Empty State -->
+            <div class="search-empty" id="searchEmpty" style="display: none;">
+                <span class="search-empty-icon">&#128270;</span>
+                <h3>No assignments found</h3>
+                <p>Try adjusting your search or filters.</p>
+            </div>
+
         </div>
-
-        <!-- Last updated timestamp -->
-        <p id="hwLastUpdated" style="font-size: 0.82rem; color: var(--gray-400); margin-bottom: 20px; display: none;"></p>
-
-        <!-- Homework cards are dynamically injected here by loadHomework() -->
-        <div class="hw-grid" id="hwGrid"></div>
-
 
     </main>
 

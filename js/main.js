@@ -498,7 +498,38 @@ function copyOutput() {
     });
 }
 
-/* ===================== HOMEWORK SEARCH PAGE ===================== */
+/* ===================== TAB SWITCHING ===================== */
+
+/**
+ * Switches between the Weekly View and Search tabs on the homework page.
+ */
+var searchLoaded = false;
+
+function switchTab(tabName) {
+    var weeklyTab = document.getElementById('tabWeekly');
+    var searchTab = document.getElementById('tabSearch');
+    if (!weeklyTab || !searchTab) return;
+
+    var buttons = document.querySelectorAll('.hw-tab');
+    buttons.forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+    });
+
+    if (tabName === 'weekly') {
+        weeklyTab.style.display = 'block';
+        searchTab.style.display = 'none';
+    } else {
+        weeklyTab.style.display = 'none';
+        searchTab.style.display = 'block';
+        // Load search data on first switch
+        if (!searchLoaded) {
+            loadSearchData();
+            searchLoaded = true;
+        }
+    }
+}
+
+/* ===================== HOMEWORK SEARCH ===================== */
 
 /*
  * All search data is stored here after fetching from the API.

@@ -843,6 +843,41 @@ ul {
 }
 
 /* ===================== HOMEWORK PAGE ===================== */
+/* Tab Switcher */
+.hw-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 32px;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    max-width: 300px;
+}
+
+.hw-tab {
+    flex: 1;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.hw-tab.active {
+    background: var(--white);
+    color: var(--navy);
+    box-shadow: var(--shadow-sm);
+}
+
+.hw-tab:hover:not(.active) {
+    color: var(--gray-700);
+}
+
 .hw-controls {
     display: flex;
     gap: 12px;
