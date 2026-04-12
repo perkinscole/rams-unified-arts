@@ -488,6 +488,285 @@ function copyOutput() {
     });
 }
 
+/* ===================== HOMEWORK SEARCH PAGE ===================== */
+
+/*
+ * All search data is stored here after fetching from the API.
+ * This is the flattened array of all assignments with subject/teacher
+ * info attached to each one.
+ */
+var allSearchAssignments = [];
+
+/**
+ * Loads assignment data for the search page.
+ * Fetches from the same API as the homework page, then flattens
+ * all subjects' assignments into a single searchable array.
+ */
+function loadSearchData() {
+    var searchResults = document.getElementById('searchResults');
+    var searchLoading = document.getElementById('searchLoading');
+    if (!searchResults) return; // Not on the search page
+
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+        if (searchLoading) searchLoading.style.display = 'none';
+        flattenAndRender({ subjects: FALLBACK_SUBJECTS });
+        return;
+    }
+
+    fetch(APPS_SCRIPT_URL)
+        .then(function(response) {
+            if (!response.ok) throw new Error('Network error');
+            return response.json();
+        })
+        .then(function(data) {
+            if (searchLoading) searchLoading.style.display = 'none';
+            flattenAndRender(data);
+        })
+        .catch(function(err) {
+            console.warn('Search: could not load from API, using fallback:', err);
+            if (searchLoading) searchLoading.style.display = 'none';
+            flattenAndRender({ subjects: FALLBACK_SUBJECTS });
+        });
+}
+
+/**
+ * Flattens the API response into a single array of assignments,
+ * attaching subject/teacher/icon to each one. Then populates
+ * filter dropdowns and renders initial results.
+ */
+function flattenAndRender(data) {
+    var subjects = data.subjects || [];
+    allSearchAssignments = [];
+
+    subjects.forEach(function(subj) {
+        (subj.assignments || []).forEach(function(a) {
+            allSearchAssignments.push({
+                title: a.title || '',
+                description: a.description || '',
+                dueDate: a.dueDate || '',
+                dueDateRaw: a.dueDateRaw || '',
+                dueDay: a.dueDay || '',
+                grade: a.grade || 'All Grades',
+                courseTitle: a.courseTitle || '',
+                link: a.link || '',
+                subject: subj.subject,
+                teacher: subj.teacher,
+                filterKey: subj.filterKey,
+                icon: subj.icon || ''
+            });
+        });
+    });
+
+    // Sort by due date (soonest first)
+    allSearchAssignments.sort(function(a, b) {
+        var da = a.dueDateRaw || '9999';
+        var db = b.dueDateRaw || '9999';
+        return da < db ? -1 : da > db ? 1 : 0;
+    });
+
+    populateSubjectDropdown(allSearchAssignments);
+    populateSectionDropdown(allSearchAssignments);
+    bindSearchEvents();
+    runSearch();
+}
+
+/**
+ * Populates the Subject dropdown from available data.
+ */
+function populateSubjectDropdown(assignments) {
+    var select = document.getElementById('filterSubject');
+    if (!select) return;
+
+    var subjects = {};
+    assignments.forEach(function(a) {
+        if (a.subject && !subjects[a.subject]) {
+            subjects[a.subject] = a.icon;
+        }
+    });
+
+    Object.keys(subjects).sort().forEach(function(subj) {
+        var opt = document.createElement('option');
+        opt.value = subj;
+        opt.textContent = (subjects[subj] || '') + ' ' + subj;
+        select.appendChild(opt);
+    });
+}
+
+/**
+ * Populates the Section dropdown from available course titles.
+ * Sections look like "Computer Science - 8T1" etc.
+ */
+function populateSectionDropdown(assignments) {
+    var select = document.getElementById('filterSection');
+    if (!select) return;
+
+    var sections = {};
+    assignments.forEach(function(a) {
+        if (a.courseTitle) sections[a.courseTitle] = true;
+    });
+
+    Object.keys(sections).sort().forEach(function(section) {
+        var opt = document.createElement('option');
+        opt.value = section;
+        opt.textContent = section;
+        select.appendChild(opt);
+    });
+}
+
+/**
+ * Binds search input and filter change events.
+ */
+function bindSearchEvents() {
+    var searchInput = document.getElementById('searchInput');
+    var filterSubject = document.getElementById('filterSubject');
+    var filterGrade = document.getElementById('filterGrade');
+    var filterSection = document.getElementById('filterSection');
+
+    if (searchInput) searchInput.addEventListener('input', runSearch);
+    if (filterSubject) filterSubject.addEventListener('change', function() {
+        // When subject changes, update section dropdown to show only matching sections
+        updateSectionDropdown();
+        runSearch();
+    });
+    if (filterGrade) filterGrade.addEventListener('change', function() {
+        updateSectionDropdown();
+        runSearch();
+    });
+    if (filterSection) filterSection.addEventListener('change', runSearch);
+}
+
+/**
+ * Updates the section dropdown to only show sections matching
+ * the current subject and grade filters.
+ */
+function updateSectionDropdown() {
+    var select = document.getElementById('filterSection');
+    if (!select) return;
+
+    var subjectFilter = (document.getElementById('filterSubject') || {}).value || '';
+    var gradeFilter = (document.getElementById('filterGrade') || {}).value || '';
+    var currentValue = select.value;
+
+    // Clear all options except "All Sections"
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+
+    var sections = {};
+    allSearchAssignments.forEach(function(a) {
+        if (subjectFilter && a.subject !== subjectFilter) return;
+        if (gradeFilter && a.grade !== gradeFilter) return;
+        if (a.courseTitle) sections[a.courseTitle] = true;
+    });
+
+    Object.keys(sections).sort().forEach(function(section) {
+        var opt = document.createElement('option');
+        opt.value = section;
+        opt.textContent = section;
+        select.appendChild(opt);
+    });
+
+    // Restore selection if it still exists
+    if (sections[currentValue]) {
+        select.value = currentValue;
+    } else {
+        select.value = '';
+    }
+}
+
+/**
+ * Runs the search/filter and renders results.
+ */
+function runSearch() {
+    var query = ((document.getElementById('searchInput') || {}).value || '').toLowerCase().trim();
+    var subjectFilter = (document.getElementById('filterSubject') || {}).value || '';
+    var gradeFilter = (document.getElementById('filterGrade') || {}).value || '';
+    var sectionFilter = (document.getElementById('filterSection') || {}).value || '';
+
+    var filtered = allSearchAssignments.filter(function(a) {
+        // Subject filter
+        if (subjectFilter && a.subject !== subjectFilter) return false;
+        // Grade filter
+        if (gradeFilter && a.grade !== gradeFilter) return false;
+        // Section filter
+        if (sectionFilter && a.courseTitle !== sectionFilter) return false;
+        // Keyword search
+        if (query) {
+            var searchable = (a.title + ' ' + a.description + ' ' + a.courseTitle + ' ' + a.teacher + ' ' + a.subject).toLowerCase();
+            return searchable.indexOf(query) !== -1;
+        }
+        return true;
+    });
+
+    renderSearchResults(filtered);
+}
+
+/**
+ * Renders the filtered search results.
+ */
+function renderSearchResults(assignments) {
+    var container = document.getElementById('searchResults');
+    var countEl = document.getElementById('searchCount');
+    var emptyEl = document.getElementById('searchEmpty');
+    if (!container) return;
+
+    // Update count
+    if (countEl) {
+        countEl.textContent = 'Showing ' + assignments.length + ' of ' + allSearchAssignments.length + ' assignments';
+    }
+
+    // Empty state
+    if (assignments.length === 0) {
+        container.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = 'block';
+        return;
+    }
+    if (emptyEl) emptyEl.style.display = 'none';
+
+    var html = '';
+    assignments.forEach(function(a) {
+        html += '<div class="search-result-card">';
+
+        // Icon
+        html += '<div class="search-result-icon">' + (a.icon || '') + '</div>';
+
+        // Body
+        html += '<div class="search-result-body">';
+        html += '<h4>' + escapeHtml(a.title) + '</h4>';
+        html += '<div class="search-result-meta">';
+        html += '<span class="search-meta-tag">' + escapeHtml(a.subject) + '</span>';
+        html += '<span class="search-meta-tag grade">' + escapeHtml(a.grade) + '</span>';
+        if (a.courseTitle) {
+            html += '<span class="search-meta-tag section">' + escapeHtml(a.courseTitle) + '</span>';
+        }
+        html += '</div>';
+        if (a.description) {
+            html += '<p class="search-result-desc">' + escapeHtml(a.description) + '</p>';
+        }
+        if (a.link) {
+            html += '<a href="' + escapeHtml(a.link) + '" target="_blank" class="search-result-link">View in Classroom &rarr;</a>';
+        }
+        html += '</div>';
+
+        // Right side - due date
+        html += '<div class="search-result-right">';
+        if (a.dueDate && a.dueDate !== 'No due date') {
+            html += '<div class="search-result-due">Due ' + escapeHtml(a.dueDate) + '</div>';
+        }
+        if (a.dueDay) {
+            html += '<div class="search-result-day">' + escapeHtml(a.dueDay) + '</div>';
+        }
+        html += '</div>';
+
+        html += '</div>';
+    });
+
+    container.innerHTML = html;
+}
+
+// Load search data when page is ready
+document.addEventListener('DOMContentLoaded', loadSearchData);
+
 /* ===================== SMOOTH SCROLL FOR ANCHOR LINKS ===================== */
 
 document.querySelectorAll('a[href*="#"]').forEach(anchor => {
