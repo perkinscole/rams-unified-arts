@@ -1,0 +1,364 @@
+<!--
+    File: parent-flyer.html
+    Author: Cole Perkins
+    Date Created: 2026-04-12
+    Date Last Modified: 2026-04-12
+    Description: Printable one-page flyer for parents, families, and students
+                 announcing the RAMS UA website and weekly homework page.
+                 Designed to be printed or saved as PDF for distribution.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMS Unified Arts - Stay Connected!</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0.5in;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            color: #1f2937;
+            background: white;
+            padding: 0.5in;
+            max-width: 8.5in;
+            line-height: 1.5;
+        }
+
+        /* Top banner */
+        .banner {
+            background: #1B2A4A;
+            color: white;
+            border-radius: 12px;
+            padding: 28px 32px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .banner .school {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #D4A843;
+            margin-bottom: 4px;
+        }
+
+        .banner h1 {
+            font-size: 28pt;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .banner .tagline {
+            font-size: 12pt;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Intro */
+        .intro {
+            text-align: center;
+            font-size: 11pt;
+            color: #4b5563;
+            margin-bottom: 24px;
+            padding: 0 20px;
+        }
+
+        /* Big URL card */
+        .url-card {
+            background: #C41E3A;
+            color: white;
+            border-radius: 10px;
+            padding: 22px 28px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .url-card .label {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            opacity: 0.85;
+            margin-bottom: 6px;
+        }
+
+        .url-card .url {
+            font-size: 18pt;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            word-break: break-all;
+        }
+
+        .url-card .note {
+            font-size: 9pt;
+            opacity: 0.75;
+            margin-top: 6px;
+        }
+
+        /* Features grid */
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .feature {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 18px 20px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 28pt;
+            margin-bottom: 6px;
+        }
+
+        .feature h3 {
+            font-size: 11pt;
+            color: #1B2A4A;
+            margin-bottom: 4px;
+        }
+
+        .feature p {
+            font-size: 9pt;
+            color: #6b7280;
+        }
+
+        /* What's on the site */
+        h2 {
+            font-size: 14pt;
+            color: #1B2A4A;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .subjects {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .subject-chip {
+            background: #f3f4f6;
+            border-radius: 8px;
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 9pt;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .subject-chip .icon {
+            font-size: 18pt;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* How it works */
+        .how-it-works {
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+
+        .how-it-works h2 {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-num {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #C41E3A;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12pt;
+            margin-bottom: 6px;
+        }
+
+        .step p {
+            font-size: 9.5pt;
+            color: #4b5563;
+        }
+
+        .step strong {
+            color: #1B2A4A;
+        }
+
+        /* Bottom contact */
+        .contact-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .contact-box {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 9.5pt;
+        }
+
+        .contact-box strong {
+            color: #1B2A4A;
+            font-size: 10pt;
+        }
+
+        .contact-box p {
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 8pt;
+            color: #9ca3af;
+        }
+
+        /* QR placeholder */
+        .qr-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .qr-placeholder {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            line-height: 100px;
+            font-size: 8pt;
+            color: #9ca3af;
+            margin-top: 8px;
+        }
+
+        @media print {
+            body { padding: 0; }
+            .banner, .url-card, .step-num {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner">
+        <div class="school">Robert Adams Middle School &bull; Holliston, MA</div>
+        <h1>Unified Arts</h1>
+        <div class="tagline">A new way to stay connected with your student's classes</div>
+    </div>
+
+    <p class="intro">
+        We're excited to share our new Unified Arts website! You can now see weekly homework,
+        explore our programs, and connect with teachers &mdash; all in one place.
+        The homework page updates automatically from Google Classroom every day.
+    </p>
+
+    <div class="url-card">
+        <div class="label">Bookmark This Page</div>
+        <div class="url">rams-unified-arts.holliston.k12.ma.us</div>
+        <div class="note">Or scan the QR code below &mdash; save it to your phone's home screen for quick access!</div>
+    </div>
+
+    <div class="qr-section">
+        <div class="qr-placeholder">QR code<br>goes here</div>
+    </div>
+
+    <h2>What You'll Find</h2>
+
+    <div class="features">
+        <div class="feature">
+            <div class="feature-icon">&#128221;</div>
+            <h3>Weekly Homework</h3>
+            <p>Updated daily from Google Classroom. Filter by subject to see just what you need.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">&#128218;</div>
+            <h3>Program Details</h3>
+            <p>Curriculum info, class expectations, and supply lists for every UA subject.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">&#128101;</div>
+            <h3>Meet the Team</h3>
+            <p>Teacher profiles and what each person teaches across the department.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">&#9993;</div>
+            <h3>Contact Info</h3>
+            <p>Every teacher's email in one place, plus extra help availability.</p>
+        </div>
+    </div>
+
+    <h2>Our Programs</h2>
+    <div class="subjects">
+        <div class="subject-chip"><span class="icon">&#127912;</span> Art</div>
+        <div class="subject-chip"><span class="icon">&#127930;</span> Band</div>
+        <div class="subject-chip"><span class="icon">&#127908;</span> Chorus</div>
+        <div class="subject-chip"><span class="icon">&#127925;</span> Gen. Music</div>
+        <div class="subject-chip"><span class="icon">&#128187;</span> Comp Sci</div>
+        <div class="subject-chip"><span class="icon">&#129657;</span> Health</div>
+        <div class="subject-chip"><span class="icon">&#127939;</span> Phys Ed</div>
+        <div class="subject-chip"><span class="icon">&#129495;</span> Wellness 2</div>
+    </div>
+
+    <div class="how-it-works">
+        <h2>How to Stay Updated</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <p><strong>Visit the site</strong> using the link above or scan the QR code</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <p><strong>Bookmark it</strong> or add to your phone's home screen</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <p><strong>Check back weekly</strong> &mdash; homework updates every morning automatically</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-bar">
+        <div class="contact-box">
+            <strong>Questions about the website?</strong>
+            <p>Contact Mr. Perkins &mdash; perkinsc@holliston.k12.ma.us</p>
+        </div>
+        <div class="contact-box">
+            <strong>Questions about a specific class?</strong>
+            <p>Visit the Contact page on the site to find your teacher's email.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        RAMS Unified Arts &bull; Robert Adams Middle School &bull; Holliston, MA &bull; 2025&ndash;2026
+    </div>
+
+</body>
+</html>

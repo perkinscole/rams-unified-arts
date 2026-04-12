@@ -1,0 +1,238 @@
+<!--
+    File: index.html
+    Author: Cole Perkins
+    Date Created: 2026-04-12
+    Date Last Modified: 2026-04-12
+    Description: Home/landing page for the RAMS Unified Arts department website.
+                 Introduces the department, highlights shared values, and provides
+                 navigation to all sections of the site.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMS Unified Arts | Robert Adams Middle School</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">&#127912;</span>
+                <span>RAMS Unified Arts</span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="team.html">Our Team</a></li>
+                <li><a href="homework.html">Weekly Homework</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="hero-content">
+            <p class="hero-subtitle">Robert Adams Middle School</p>
+            <h1 class="hero-title">Unified Arts</h1>
+            <p class="hero-description">
+                Art, Music, Computer Science, Health &amp; Wellness &mdash;
+                building confident, creative, well-rounded students in grades 6&ndash;8.
+            </p>
+            <div class="hero-actions">
+                <a href="programs.html" class="btn btn-primary">Explore Programs</a>
+                <a href="homework.html" class="btn btn-secondary">Weekly Homework</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quick Links -->
+    <section class="quick-links">
+        <div class="container">
+            <div class="quick-grid">
+                <a href="programs.html#art" class="quick-card">
+                    <span class="quick-icon">&#127912;</span>
+                    <span class="quick-label">Art</span>
+                </a>
+                <a href="programs.html#band" class="quick-card">
+                    <span class="quick-icon">&#127930;</span>
+                    <span class="quick-label">Band</span>
+                </a>
+                <a href="programs.html#chorus" class="quick-card">
+                    <span class="quick-icon">&#127908;</span>
+                    <span class="quick-label">Chorus</span>
+                </a>
+                <a href="programs.html#music" class="quick-card">
+                    <span class="quick-icon">&#127925;</span>
+                    <span class="quick-label">Music</span>
+                </a>
+                <a href="programs.html#cs" class="quick-card">
+                    <span class="quick-icon">&#128187;</span>
+                    <span class="quick-label">Computer Science</span>
+                </a>
+                <a href="programs.html#health" class="quick-card">
+                    <span class="quick-icon">&#129657;</span>
+                    <span class="quick-label">Health</span>
+                </a>
+                <a href="programs.html#pe" class="quick-card">
+                    <span class="quick-icon">&#127939;</span>
+                    <span class="quick-label">Phys Ed</span>
+                </a>
+                <a href="programs.html#wellness" class="quick-card">
+                    <span class="quick-icon">&#129495;</span>
+                    <span class="quick-label">Wellness 2</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shared Values -->
+    <section class="values section">
+        <div class="container">
+            <h2 class="section-title">Our Shared Values</h2>
+            <p class="section-subtitle">What guides everything we do in Unified Arts</p>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">&#128150;</div>
+                    <h3>Supporting the Whole Student</h3>
+                    <p>We focus on social-emotional well-being, helping students build confidence, resilience, and a sense of belonging.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">&#11088;</div>
+                    <h3>A Place to Shine</h3>
+                    <p>Our classes often become the space where students discover their passions and talents, and we celebrate those successes.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">&#127881;</div>
+                    <h3>Joyful Learning</h3>
+                    <p>We want students to want to be in our classes, to feel seen and valued, and to experience learning in creative and meaningful ways.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">&#129309;</div>
+                    <h3>Collaboration &amp; Growth</h3>
+                    <p>We believe in working together to nurture every student's academic, social, and emotional growth.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about section section-alt">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">What is Unified Arts?</h2>
+                    <p>
+                        Unified Arts at Robert Adams Middle School offers students in grades 6&ndash;8 a
+                        well-rounded experience across Art, Band, Chorus, General Music, Computer Science,
+                        Health, Physical Education, and Wellness&nbsp;2.
+                    </p>
+                    <p>
+                        These are <strong>year-long courses</strong> &mdash; students receive one final grade
+                        at the end of the year. When checking PowerSchool, look for the <strong>Y1</strong> column.
+                    </p>
+                    <ul class="about-highlights">
+                        <li>Full-year courses across 8 disciplines</li>
+                        <li>Standards-based and letter grading</li>
+                        <li>Concerts, performances, and showcases throughout the year</li>
+                        <li>Extra help available from every teacher</li>
+                    </ul>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <span class="stat-number">8</span>
+                        <span class="stat-label">Programs</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">7</span>
+                        <span class="stat-label">Teachers</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">Grade Levels</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">1</span>
+                        <span class="stat-label">Amazing Team</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Drama Spotlight -->
+    <section class="spotlight section">
+        <div class="container">
+            <h2 class="section-title">RAMS Drama</h2>
+            <p class="section-subtitle">Extracurricular theater opportunities for all students</p>
+            <div class="spotlight-grid">
+                <div class="spotlight-card">
+                    <h3>Drama Workshop</h3>
+                    <p>Thursdays after school &mdash; explore acting, improvisation, and stagecraft.</p>
+                </div>
+                <div class="spotlight-card">
+                    <h3>Fall One-Acts</h3>
+                    <p>Short plays performed each fall, giving students a chance to act, direct, and crew.</p>
+                </div>
+                <div class="spotlight-card">
+                    <h3>Spring Musical</h3>
+                    <p>Our big annual production &mdash; singing, dancing, acting, and stage design all come together.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Stay Connected</h2>
+                <p>Check weekly homework postings, learn about our programs, or reach out to any of our teachers.</p>
+                <div class="cta-actions">
+                    <a href="homework.html" class="btn btn-primary">View Homework</a>
+                    <a href="contact.html" class="btn btn-outline">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">&#127912;</span>
+                    <span>RAMS Unified Arts</span>
+                    <p>Robert Adams Middle School &bull; Holliston, MA</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="programs.html">Programs</a>
+                    <a href="team.html">Our Team</a>
+                    <a href="homework.html">Homework</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 RAMS Unified Arts &mdash; Robert Adams Middle School, Holliston, MA</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

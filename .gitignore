@@ -1,0 +1,5 @@
+# Reference files (presentations, PDFs, examples)
+*.pptx
+*.pdf
+DeAngelisExample*.png
+.DS_Store
