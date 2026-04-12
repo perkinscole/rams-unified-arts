@@ -1177,6 +1177,106 @@ ul {
     margin: 0 auto;
 }
 
+/* ===================== TEACHER PORTAL ===================== */
+.nav-teacher {
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem !important;
+    padding: 6px 12px !important;
+    color: var(--gray-500) !important;
+}
+
+.nav-teacher:hover,
+.nav-teacher.active {
+    border-color: var(--navy) !important;
+    background: var(--navy) !important;
+    color: var(--white) !important;
+}
+
+.portal-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 24px 28px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    margin-bottom: 32px;
+}
+
+.portal-info-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.portal-info h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+}
+
+.portal-info p {
+    font-size: 0.95rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+.portal-frame-container {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 48px;
+    background: var(--gray-50);
+}
+
+.portal-frame {
+    width: 100%;
+    min-height: 700px;
+    border: none;
+    display: block;
+}
+
+.portal-help {
+    margin-bottom: 32px;
+}
+
+.portal-help h3 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 20px;
+}
+
+.portal-help-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.portal-help-card {
+    padding: 20px 24px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+}
+
+.portal-help-card h4 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+}
+
+.portal-help-card p {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 900px) {
     .program-content {
@@ -1194,6 +1294,15 @@ ul {
 
     .ai-form-row {
         grid-template-columns: 1fr;
+    }
+
+    .portal-help-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .portal-info {
+        flex-direction: column;
+        text-align: center;
     }
 }
 

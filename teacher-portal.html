@@ -1,0 +1,129 @@
+<!--
+    File: teacher-portal.html
+    Author: Cole Perkins
+    Date Created: 2026-04-12
+    Date Last Modified: 2026-04-12
+    Description: Teacher Portal page for the RAMS Unified Arts website. Embeds
+                 the Google Apps Script authorization page where teachers can
+                 connect their Google Classroom courses to the homework feed.
+                 Future: add OAuth login so only teachers can access this page.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal | RAMS Unified Arts</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">&#127912;</span>
+                <span>RAMS Unified Arts</span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="programs.html">Programs</a></li>
+                <li><a href="team.html">Our Team</a></li>
+                <li><a href="homework.html">Weekly Homework</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="teacher-portal.html" class="active nav-teacher">Teacher Portal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Teacher Portal</h1>
+            <p>Connect your Google Classroom to the homework page</p>
+        </div>
+    </header>
+
+    <main class="container section">
+
+        <!-- Info Banner -->
+        <div class="portal-info">
+            <div class="portal-info-icon">&#128274;</div>
+            <div>
+                <h3>For RAMS Unified Arts Teachers Only</h3>
+                <p>Use this tool to link your Google Classroom courses to the homework page.
+                   Once connected, your posted assignments will automatically appear for
+                   parents and students each day.</p>
+            </div>
+        </div>
+
+        <!-- Embedded Auth Page -->
+        <div class="portal-frame-container">
+            <iframe
+                id="authFrame"
+                src="https://script.google.com/macros/s/AKfycbxdfNVQBQQN7y0fU9MN5AXduo4m8LCsekj18D0nipewNvIO5Ax7-qF6CscNe42t09Y/exec?action=authorize"
+                class="portal-frame"
+                title="Teacher Classroom Setup"
+            ></iframe>
+        </div>
+
+        <!-- Help Section -->
+        <div class="portal-help">
+            <h3>Need Help?</h3>
+            <div class="portal-help-grid">
+                <div class="portal-help-card">
+                    <h4>Step 1: Co-Teacher Access</h4>
+                    <p>Add <strong>perkinsc@holliston.k12.ma.us</strong> as a co-teacher
+                       on each Google Classroom course you want on the homework page.</p>
+                </div>
+                <div class="portal-help-card">
+                    <h4>Step 2: Fill Out the Form</h4>
+                    <p>Enter your school email, display name, and subject above.
+                       Then click "Load My Courses" to see your classes.</p>
+                </div>
+                <div class="portal-help-card">
+                    <h4>Step 3: Select &amp; Save</h4>
+                    <p>Check the courses you want included, then click
+                       "Save Configuration." You're done!</p>
+                </div>
+                <div class="portal-help-card">
+                    <h4>When Does It Update?</h4>
+                    <p>The homework page refreshes automatically every morning at 6 AM.
+                       You can also ask Mr. Perkins to trigger a manual refresh.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">&#127912;</span>
+                    <span>RAMS Unified Arts</span>
+                    <p>Robert Adams Middle School &bull; Holliston, MA</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="programs.html">Programs</a>
+                    <a href="team.html">Our Team</a>
+                    <a href="homework.html">Homework</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 RAMS Unified Arts &mdash; Robert Adams Middle School, Holliston, MA</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
