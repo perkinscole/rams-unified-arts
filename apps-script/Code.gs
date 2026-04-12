@@ -186,19 +186,14 @@ function fetchAssignmentsForTeacher_(config) {
     return assignments;
   }
 
-  // Get the current week boundaries (Monday to Friday)
+  // Only show assignments due within the next 7 days from today
   var now = new Date();
-  var monday = new Date(now);
-  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-  monday.setHours(0, 0, 0, 0);
+  var today = new Date(now);
+  today.setHours(0, 0, 0, 0);
 
-  var friday = new Date(monday);
-  friday.setDate(monday.getDate() + 4);
-  friday.setHours(23, 59, 59, 999);
-
-  // Also look ahead to next Monday for weekend-due items
-  var nextMonday = new Date(monday);
-  nextMonday.setDate(monday.getDate() + 7);
+  var sevenDaysOut = new Date(today);
+  sevenDaysOut.setDate(today.getDate() + 7);
+  sevenDaysOut.setHours(23, 59, 59, 999);
 
   courseIds.forEach(function(courseId) {
     courseId = courseId.trim();
@@ -218,7 +213,7 @@ function fetchAssignmentsForTeacher_(config) {
 
       if (response.courseWork) {
         response.courseWork.forEach(function(work) {
-          // Check if this assignment is relevant to the current week
+          // Only include assignments with a due date in the next 7 days
           var isRelevant = false;
           var dueDate = null;
 
@@ -228,16 +223,7 @@ function fetchAssignmentsForTeacher_(config) {
               work.dueDate.month - 1,
               work.dueDate.day
             );
-            // Due this week or next few days
-            isRelevant = (dueDate >= monday && dueDate <= nextMonday);
-          }
-
-          // Also check if it was recently posted (within last 7 days)
-          if (!isRelevant && work.updateTime) {
-            var updated = new Date(work.updateTime);
-            var sevenDaysAgo = new Date(now);
-            sevenDaysAgo.setDate(now.getDate() - 7);
-            isRelevant = (updated >= sevenDaysAgo);
+            isRelevant = (dueDate >= today && dueDate <= sevenDaysOut);
           }
 
           if (isRelevant) {

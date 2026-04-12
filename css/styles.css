@@ -999,7 +999,23 @@ ul {
     display: grid;
     grid-template-columns: 100px 1fr;
     gap: 8px;
-    padding: 6px 0;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 2px;
+}
+
+.hw-day-even {
+    background: var(--gray-50);
+}
+
+.hw-day-odd {
+    background: var(--white);
+}
+
+.hw-no-hw {
+    font-size: 0.88rem;
+    color: var(--gray-400);
+    font-style: italic;
 }
 
 .hw-day-label {

@@ -187,35 +187,35 @@ function renderHomeworkCards(grid, data, lastUpdatedEl) {
                     }
                 });
 
-                var dayOrder = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-                var hasDays = Object.keys(dayMap).length > 0;
+                // Always show all 5 weekdays, even if empty
+                var dayOrder = ['Monday','Tuesday','Wednesday','Thursday','Friday'];
+                var dayIndex = 0;
 
-                if (hasDays) {
-                    dayOrder.forEach(function(day) {
-                        if (!dayMap[day]) return;
-                        html += '<div class="hw-day-group">';
-                        html += '<span class="hw-day-label">' + day + '</span>';
-                        html += '<div class="hw-day-items">';
+                dayOrder.forEach(function(day) {
+                    var evenOdd = (dayIndex % 2 === 0) ? 'even' : 'odd';
+                    html += '<div class="hw-day-group hw-day-' + evenOdd + '">';
+                    html += '<span class="hw-day-label">' + day + '</span>';
+                    html += '<div class="hw-day-items">';
+                    if (dayMap[day] && dayMap[day].length > 0) {
                         dayMap[day].forEach(function(a) {
                             html += renderAssignment_(a);
                         });
-                        html += '</div></div>';
-                    });
-                }
+                    } else {
+                        html += '<span class="hw-no-hw">No homework</span>';
+                    }
+                    html += '</div></div>';
+                    dayIndex++;
+                });
 
                 // Assignments with no specific due date
                 if (noDayItems.length > 0) {
-                    if (hasDays) {
-                        html += '<div class="hw-day-group">';
-                        html += '<span class="hw-day-label">Ongoing</span>';
-                        html += '<div class="hw-day-items">';
-                    }
+                    html += '<div class="hw-day-group hw-day-even">';
+                    html += '<span class="hw-day-label">Ongoing</span>';
+                    html += '<div class="hw-day-items">';
                     noDayItems.forEach(function(a) {
                         html += renderAssignment_(a);
                     });
-                    if (hasDays) {
-                        html += '</div></div>';
-                    }
+                    html += '</div></div>';
                 }
 
                 html += '</div>';
