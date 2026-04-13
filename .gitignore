@@ -3,3 +3,6 @@
 *.pdf
 DeAngelisExample*.png
 .DS_Store
+
+# Local Netlify folder
+.netlify
